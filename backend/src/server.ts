@@ -24,7 +24,8 @@ app.use(express.json({ limit: '20mb' }));
 
 app.use('/api', Router(db));
 
-const port = Number.isInteger(process.env.PORT) ? +process.env.PORT! : 8080;
+let port = parseInt(process.env.PORT ?? '8080');
+if (port > 65535 || port < 0) port = 8080;
 server.listen(+port, () => console.log(`server running on port ${+port}`));
 
 const close = () => client.close().then(() => process.exit(0)).catch(() => process.exit(1));
