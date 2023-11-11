@@ -23,7 +23,7 @@ This will allow me to go in and add or remove pictures easily, as well as export
 
 I will also have a MongoDB database running to store the location of the images on disk. On request, a custom middleware will serve the image from the disk. I want to have the option to add other cloud-hosted db services like S3 or Google Drive or Firestore, but this isn't a priority as the main purpose of this is to not be cloud reliant.
 
-The MongoDB database will also store hashes of the images. Whenever an image is uploaded, an MD5 sum will be generated for the file, and a thumbnail will be generated and added to the album's respective thumb_cache. This means that if an image is ever updated and re-uploaded with the same name, the MD5 will be different and the thumbnail will be regenerated. This also means that uploading duplicates (or multiple of the same image with different names) will not generate new thumbnail images.
+When an image is uploaded, a thumbnail will be generated and added to the album's respective thumb_cache.
 
 Finally, MongoDB will also include user authentication so that users can be granted access to specific (or all) albums. This way, I can host albums with different groups of people on the same server and not worry about cross contamination.
 
