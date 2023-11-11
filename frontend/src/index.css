@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    font-family: 'Nunito', sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    background-color: white;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+}
+
+h1 {
+    display: block;
+    font-size: 2em;
+    margin-top: 0.67em;
+    margin-bottom: 0.67em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+h2 {
+    display: block;
+    font-size: 1.5em;
+    margin-top: 0.83em;
+    margin-bottom: 0.83em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+h3 {
+    display: block;
+    font-size: 1.17em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+h4 {
+    display: block;
+    margin-top: 1.33em;
+    margin-bottom: 1.33em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+p {
+    display: block;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    color: #888888;
+}
+
+a {
+    color: #0064A4;
+}
+
+.shadow {
+    box-shadow: 6px 6px 38px rgba(0, 0, 0, 0.35);
+    -webkit-box-shadow: 6px 6px 38px 0 rgba(0, 0, 0, 0.35);
+    -moz-box-shadow: 6px 6px 38px 0 rgba(0, 0, 0, 0.35);
+}
+
+body,
+html {
+    overflow-x: hidden;
+    padding: 0;
+    margin: 0;
+    user-select: none;
+    height: 100vh;
+}
