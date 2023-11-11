@@ -12,5 +12,7 @@ module.exports = {
   moduleNameMapper: {
     '\\.(css|scss|jpg|png|svg)$': 'mocks/empty.ts',
     '~/(.*)': '<rootDir>/src/$1'
-  }
+  },
+  "globalSetup": "./tests/setup.ts",
+  "globalTeardown": "./tests/teardown.ts"
 };

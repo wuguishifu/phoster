@@ -2,7 +2,6 @@ import express from 'express';
 import { Db } from 'mongodb';
 import fs from 'fs';
 import sharp from 'sharp';
-import path from 'path'
 
 import Image from '../../models/Image';
 
@@ -13,13 +12,7 @@ export default function ImageRouter(db: Db) {
 
     router.post('/image', async (req, res) => {
         const { album_id, base64, user_id } = req.body as { album_id: string, base64: string, user_id: string };
-
         const image = new Image({ author: user_id, album_id });
-
-        console.log({
-            image_path: `${outputDir}/${album_id}/${image.image_id}`,
-            thumb_path: `${outputDir}/${album_id}/thumb_cache/${image.image_id}.thumb`
-        });
 
         // save image to disk
         try {
@@ -48,6 +41,30 @@ export default function ImageRouter(db: Db) {
 
         if (result.acknowledged) return res.status(201).send({ image });
         else return res.status(500).send({ error: 'error creating image' });
+    });
+
+    router.get('/image', async (req, res) => {
+        const { image_id } = req.query as { image_id: string };
+
+        let image;
+        try {
+            image = await db.collection('images').findOne(
+                { image_id },
+                { projection: { _id: 0 } }
+            );
+        } catch (error) {
+            let message = 'an unknown error has occurred';
+            if (error instanceof Error) message = error.message;
+            return res.status(500).send({ error: 'error fetching image', message });
+        }
+
+        if (!image) return res.status(404).send({ error: 'image not found' });
+
+        res.writeHead(200, {
+            'Content-Type': 'image/png',
+            'Content-Encoding': 'base64'
+        });
+        fs.createReadStream(`${outputDir}/${image.album_id}/${image.image_id}`, 'base64').pipe(res);
     });
 
     router.get('/ping', (_, res) => {

@@ -1,10 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
-import child_process, { ChildProcessWithoutNullStreams } from 'child_process';
 import crypto from 'crypto';
 import fs from 'fs';
 import sizeOf from 'image-size';
-import { Db, MongoClient } from 'mongodb';
-import path from 'path';
+import { Db, MongoClient, ObjectId } from 'mongodb';
 import mongodbConfig from '../../src/config/mongodb-config.json';
 
 const inputPath = './tests/res/input.png';
@@ -16,38 +14,10 @@ describe('uploadImage', () => {
 
     let client: MongoClient;
     let db: Db;
-
-    let __INTEG_TEST_CHILD__: ChildProcessWithoutNullStreams;
+    let image_id: string;
 
     beforeAll(async () => {
         return Promise.all([
-            // run the server
-            new Promise<void>((resolve) => {
-                __INTEG_TEST_CHILD__ = child_process.spawn(
-                    'node dist/server.js',
-                    [],
-                    {
-                        env: {
-                            ...process.env,
-                            NODE_ENV: 'development',
-                            PORT: '3801',
-                            OUTPUT_DIR: outputDir
-                        },
-                        shell: true
-                    }
-                );
-                __INTEG_TEST_CHILD__.stdout.on('data', (data) => {
-                    const str = data.toString();
-                    console.log('[server]', str);
-                    if (str.includes('running')) {
-                        resolve();
-                    }
-                });
-                __INTEG_TEST_CHILD__.stderr.on('data', (data) => {
-                    const str = data.toString();
-                    console.error('[server]', str);
-                });
-            }),
             // connect to the database
             new Promise<void>((resolve, reject) => {
                 client = new MongoClient(`${mongodbConfig.development.ip}/?${Object.entries(mongodbConfig.development.options).map(([key, value]) => `${key}=${value}`).join('&')}`);
@@ -66,31 +36,11 @@ describe('uploadImage', () => {
                     resolve();
                 });
             }),
-            // make the test output album directory
-            new Promise<void>((resolve, reject) => {
-                fs.mkdir(`${outputDir}/test-album/thumb_cache`, { recursive: true }, (err) => {
-                    if (err) reject(err);
-                    resolve();
-                });
-            }),
         ]);
     });
 
-    afterAll(() => {
-        rmdir(`${outputDir}`);
-        if (process.platform === 'win32') {
-            child_process.exec('taskkill /pid ' + __INTEG_TEST_CHILD__.pid + ' /T /F');
-        } else {
-            __INTEG_TEST_CHILD__.kill('SIGTERM');
-        }
-    });
-
-    it('should respond with 200 {\"message\": \"pong\"} when pinged', async () => {
-        const response = await fetch('http://localhost:3801/api/images/ping');
-        const body = await response.json();
-
-        expect(response.status).toBe(200);
-        expect(body).toEqual({ message: 'pong' });
+    afterAll(async () => {
+        return db.collection('images').deleteOne({ image_id });
     });
 
     it('should save the base64 encoded image to disk, save a thumbnail to disk, and add an image to the database', async () => {
@@ -135,7 +85,7 @@ describe('uploadImage', () => {
 
         let thumb: string | null = null;
         await new Promise<void>((resolve) => {
-            fs.readFile(`${outputDir}/${body.image.album_id}/${body.image.image_id}/thumb_cache`, (err, data) => {
+            fs.readFile(`${outputDir}/${body.image.album_id}/thumb_cache/${body.image.image_id}.thumb`, (err, data) => {
                 if (err) return resolve();
                 thumb = Buffer.from(data).toString('base64');
                 resolve();
@@ -148,28 +98,15 @@ describe('uploadImage', () => {
         expect(dimensions.height).toBe(128);
 
         const stored = await db.collection('images').findOne({ image_id: body.image.image_id });
+        console.log(stored);
         expect(stored).toEqual(expect.objectContaining({
-            _id: expect.any(String),
+            _id: expect.any(ObjectId),
             image_id: expect.any(String),
             album_id: 'test-album',
             author: 'test-user',
-            uploaded_at: expect.any(String),
+            uploaded_at: expect.any(Date),
         }));
+
+        image_id = body.image.image_id;
     });
 });
-
-function rmdir(dirPath: string) {
-    const list = fs.readdirSync(dirPath);
-    for (let i = 0; i < list.length; i++) {
-        const filename = path.join(dirPath, list[i]);
-        const stat = fs.statSync(filename);
-        if (filename === '.' || filename === '..') {
-
-        } else if (stat.isDirectory()) {
-            rmdir(filename);
-        } else {
-            fs.unlinkSync(filename);
-        }
-    }
-    fs.rmdirSync(dirPath);
-}
