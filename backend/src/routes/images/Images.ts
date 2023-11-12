@@ -67,6 +67,22 @@ export default function ImageRouter(db: Db) {
         fs.createReadStream(`${outputDir}/${image.album_id}/${image.image_id}`, 'base64').pipe(res);
     });
 
+    router.delete('/image', async (req, res) => {
+        const { user_id, image_id } = req.query as { image_id: string, user_id: string };
+
+        let result;
+        try {
+            result = await db.collection('images').deleteOne({ image_id, author: user_id });
+        } catch (error) {
+            let message = 'an unknown error has occurred';
+            if (error instanceof Error) message = error.message;
+            return res.status(500).send({ error: 'error deleting image', message });
+        }
+
+        if (result.deletedCount === 0) return res.status(404).send({ error: 'image not found' });
+        else return res.status(200).send({ message: 'image deleted' });
+    });
+
     router.get('/ping', (_, res) => {
         res.status(200).send({ message: 'pong' });
     });

@@ -6,7 +6,7 @@ import { Db, MongoClient, ObjectId } from 'mongodb';
 import mongodbConfig from '../../src/config/mongodb-config.json';
 
 const inputPath = './tests/res/input.png';
-const outputDir = './tests/images/albums';
+import { outputDir } from '../test.config';
 
 describe('uploadImage', () => {
     let input: string;
@@ -22,10 +22,7 @@ describe('uploadImage', () => {
             new Promise<void>((resolve, reject) => {
                 client = new MongoClient(`${mongodbConfig.development.ip}/?${Object.entries(mongodbConfig.development.options).map(([key, value]) => `${key}=${value}`).join('&')}`);
                 db = client.db(mongodbConfig.development.db);
-                client.connect().then(() => {
-                    console.log('connected to mongodb db');
-                    resolve();
-                }).catch(err => reject(err));
+                client.connect().then(() => resolve()).catch(err => reject(err));
             }),
             // load the image
             new Promise<void>((resolve, reject) => {
@@ -40,7 +37,8 @@ describe('uploadImage', () => {
     });
 
     afterAll(async () => {
-        return db.collection('images').deleteOne({ image_id });
+        await db.collection('images').deleteOne({ image_id });
+        await client.close();
     });
 
     it('should save the base64 encoded image to disk, save a thumbnail to disk, and add an image to the database', async () => {
@@ -56,7 +54,6 @@ describe('uploadImage', () => {
             })
         });
         const body = await response.json();
-        console.log(body);
 
         // test for correct response
         expect(response.status).toBe(201);
@@ -98,7 +95,6 @@ describe('uploadImage', () => {
         expect(dimensions.height).toBe(128);
 
         const stored = await db.collection('images').findOne({ image_id: body.image.image_id });
-        console.log(stored);
         expect(stored).toEqual(expect.objectContaining({
             _id: expect.any(ObjectId),
             image_id: expect.any(String),

@@ -1,12 +1,12 @@
-import 'tsconfig-paths/register'; // force register typescript module paths
-import fs from 'fs';
 import child_process, { ChildProcessWithoutNullStreams } from 'child_process';
-
-export const outputDir = './tests/images/albums';
+import fs from 'fs';
+import 'tsconfig-paths/register'; // force register typescript module paths
 
 declare global {
     var __INTEG_TEST_CHILD__: ChildProcessWithoutNullStreams;
 }
+
+import { outputDir } from './test.config';
 
 const setup = async (): Promise<void> => {
     await Promise.all([

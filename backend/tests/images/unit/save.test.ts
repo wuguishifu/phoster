@@ -1,14 +1,16 @@
-import { generateThumb } from '../../src/routes/images/Images';
+import { saveImage } from '../../../src/routes/images/Images';
+import crypto from 'crypto';
 import fs from 'fs';
-import sizeOf from 'image-size';
 
 import { describe, beforeAll, afterAll, expect, it } from '@jest/globals';
 
+import { outputDir } from '../../test.config';
 const inputPath = './tests/res/input.png';
-const outputPath = './tests/res/output-thumb.png';
+const outputPath = `${outputDir}/output.png`;
 
-describe('generateThumb', () => {
+describe('saveImage', () => {
     let input: string;
+    let inputHash: string;
 
     beforeAll(async () => {
         input = await new Promise<string>((resolve, reject) => {
@@ -17,6 +19,7 @@ describe('generateThumb', () => {
                 resolve(Buffer.from(data).toString('base64'));
             });
         });
+        inputHash = crypto.createHash('MD5').update(input).digest('hex');
     });
 
     afterAll(async () => {
@@ -28,31 +31,32 @@ describe('generateThumb', () => {
         });
     });
 
-    it('should save a 128x128 thumbnail of a base64 encoded png to disk', async () => {
+    it('should save a base64 encoded png to disk', async () => {
         let output: string | null;
+        let outputHash: string | null = null;
 
-        // generate the thumbnail
-        await generateThumb({ base64: input, location: outputPath });
+        // save the image
+        await saveImage({ base64: input, location: outputPath });
 
+        // read the saved image
         output = await new Promise<string | null>(resolve => {
             fs.readFile(outputPath, (err, data) => {
                 if (err) resolve(null);
                 resolve(Buffer.from(data).toString('base64'));
             });
-        });
+        })
+        if (output != null) outputHash = crypto.createHash('MD5').update(output).digest('hex');
 
         expect(output).not.toBeNull();
-
-        const dimensions = sizeOf(Buffer.from(output!, 'base64'));
-        expect(dimensions.width).toBe(128);
-        expect(dimensions.height).toBe(128);
+        expect(outputHash).not.toBeNull();
+        expect(outputHash).toEqual(inputHash);
     });
 
     it('should throw an error if image is not supplied', async () => {
-        expect(() => generateThumb({ base64: '', location: outputPath })).toThrow();
+        expect(() => saveImage({ base64: '', location: outputPath })).toThrow();
     });
 
     it('should throw an error if the output destination already exists', async () => {
-        expect(() => generateThumb({ base64: input, location: inputPath })).toThrow();
+        expect(() => saveImage({ base64: input, location: inputPath })).toThrow();
     });
 });

@@ -1,16 +1,20 @@
-import 'tsconfig-paths/register'; // force register typescript module paths
+import child_process, { ChildProcessWithoutNullStreams } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import child_process from 'child_process';
+import 'tsconfig-paths/register'; // force register typescript module paths
 
-import { outputDir } from './setup';
+declare global {
+    var __INTEG_TEST_CHILD__: ChildProcessWithoutNullStreams;
+}
+
+import { outputDir } from './test.config';
 
 const teardown = async (): Promise<void> => {
     rmdir(outputDir);
     if (process.platform === 'win32') {
-        child_process.exec('taskkill /pid ' + __INTEG_TEST_CHILD__.pid + ' /T /F');
+        child_process.exec('taskkill /pid ' + global.__INTEG_TEST_CHILD__.pid + ' /T /F');
     } else {
-        __INTEG_TEST_CHILD__.kill('SIGTERM');
+        global.__INTEG_TEST_CHILD__.kill('SIGTERM');
     }
 };
 
