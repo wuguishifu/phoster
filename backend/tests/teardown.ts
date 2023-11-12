@@ -1,7 +1,8 @@
+import 'tsconfig-paths/register'; // force register typescript module paths
+
 import child_process, { ChildProcessWithoutNullStreams } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import 'tsconfig-paths/register'; // force register typescript module paths
 
 declare global {
     var __INTEG_TEST_CHILD__: ChildProcessWithoutNullStreams;

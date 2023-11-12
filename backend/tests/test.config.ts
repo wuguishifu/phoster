@@ -1,1 +1,1 @@
-export const outputDir = './tests/images/albums';
+export const outputDir = './tests/store';

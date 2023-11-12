@@ -5,8 +5,8 @@ import sizeOf from 'image-size';
 import { Db, MongoClient, ObjectId } from 'mongodb';
 import mongodbConfig from '../../src/config/mongodb-config.json';
 
-const inputPath = './tests/res/input.png';
 import { outputDir } from '../test.config';
+const inputPath = './tests/res/input.png';
 
 describe('uploadImage', () => {
     let input: string;
@@ -91,6 +91,7 @@ describe('uploadImage', () => {
 
         expect(thumb).not.toBeNull();
         const dimensions = sizeOf(Buffer.from(thumb!, 'base64'));
+
         expect(dimensions.width).toBe(128);
         expect(dimensions.height).toBe(128);
 

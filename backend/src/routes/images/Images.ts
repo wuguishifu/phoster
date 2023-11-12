@@ -5,7 +5,7 @@ import sharp from 'sharp';
 
 import Image from '../../models/Image';
 
-const outputDir = process.env.OUTPUT_DIR ?? './';
+const outputDir = process.env.OUTPUT_DIR || './';
 
 export default function ImageRouter(db: Db) {
     const router = express.Router();
