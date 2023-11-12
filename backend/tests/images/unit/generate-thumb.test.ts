@@ -1,6 +1,6 @@
 import { generateThumb } from '../../../src/routes/images/Images';
 import fs from 'fs';
-import sizeOf from 'image-size';
+import { sizeOf } from '../../../src/utils/png';
 
 import { describe, beforeAll, afterAll, expect, it } from '@jest/globals';
 

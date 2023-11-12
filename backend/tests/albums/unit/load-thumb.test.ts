@@ -1,9 +1,9 @@
 import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 import fs from 'fs';
-import sizeOf from 'image-size';
 import { Db, MongoClient } from "mongodb";
 import mongodbConfig from '../../../src/config/mongodb-config.json';
 import { getThumbnail } from "../../../src/routes/albums/Albums";
+import { sizeOf } from '../../../src/utils/png';
 
 const inputPath = './tests/res/input.png';
 
