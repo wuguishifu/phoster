@@ -4,8 +4,6 @@
 
 :root {
     font-family: 'Nunito', sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
 
     background-color: white;
 
@@ -81,4 +79,48 @@ html {
     margin: 0;
     user-select: none;
     height: 100vh;
+}
+
+.button-primary {
+    background-color: #6C63FF;
+    transition: all 0.1s ease-in-out;
+    box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.07);
+}
+
+.button-primary:hover,
+.button-primary:focus-within {
+    box-shadow: 0 0 16px 4px #d4e7ffeE;
+}
+
+.button-primary:active {
+    background-color: #9590ff;
+}
+
+.button-secondary {
+    background-color: #FFFFFF;
+    transition: all 0.1s ease-in-out;
+    box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.07);
+}
+
+.button-secondary:hover,
+.button-secondary:focus-within {
+    box-shadow: 0 0 16px 4px #d4e7ffeE;
+}
+
+.button-secondary:active {
+    background-color: #E3EFFF60;
+}
+
+.text-input {
+    box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.07);
+    transition: all 0.1s ease-in-out;
+}
+
+.text-input:hover,
+.text-input:focus-within {
+    box-shadow: 0 0 16px 4px #d4e7ffeE;
+}
+
+.errored {
+    box-shadow: 0 0 16px 4px #FFEBEE;
 }
