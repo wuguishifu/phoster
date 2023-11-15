@@ -60,72 +60,89 @@ export default function SignUp() {
                     <img src={graphic} style={{ position: 'absolute', overflow: 'hidden', right: -42, top: 224 }} />
                 </div>
                 <div className="flex flex-col h-full relative flex-[532] items-center">
-                    <div className='font-bold text-3xl leading-10 absolute top-16'>welcome!</div>
-                    <TextInput
-                        value={name}
-                        error={error.filter(e => e.fields.includes('name')).length > 0}
-                        placeholder={'name'}
-                        setValue={v => {
-                            setName(v);
-                            setError(p => p.filter(e => !e.fields.includes('name')));
-                        }}
-                        secure={false}
-                        style={{ position: 'absolute', width: 310, height: 40, top: 152 }}
-                        onDone={onDone}
-                    />
-                    <TextInput
-                        value={email}
-                        error={error.filter(e => e.fields.includes('email')).length > 0}
-                        placeholder={'email'}
-                        setValue={v => {
-                            setEmail(v);
-                            setError(p => p.filter(e => !e.fields.includes('email')));
-                        }}
-                        secure={false}
-                        style={{ position: 'absolute', width: 310, height: 40, top: 218 }}
-                        onDone={onDone}
-                    />
-                    <TextInput
-                        value={password0}
-                        error={error.filter(e => e.fields.includes('password0')).length > 0}
-                        placeholder={'password (6+ characters)'}
-                        setValue={v => {
-                            setPassword0(v);
-                            setError(p => p.filter(e => !e.fields.includes('password0')));
-                        }}
-                        secure={true}
-                        style={{ position: 'absolute', width: 310, height: 40, top: 284 }}
-                        onDone={onDone}
-                    />
-                    <TextInput
-                        value={password1}
-                        error={error.filter(e => e.fields.includes('password1')).length > 0}
-                        placeholder={'confirm password'}
-                        setValue={v => {
-                            setPassword1(v);
-                            setError(p => p.filter(e => !e.fields.includes('password1')))
-                        }}
-                        secure={true}
-                        style={{ position: 'absolute', width: 310, height: 40, top: 350 }}
-                        onDone={onDone}
-                    />
+                    <h1 className='font-bold text-3xl leading-10 pt-10'>welcome!</h1>
+                    <div className='pt-6'>
+                        <TextInput
+                            value={name}
+                            error={error.filter(e => e.fields.includes('name')).length > 0}
+                            placeholder={'name'}
+                            setValue={v => {
+                                setName(v);
+                                setError(p => p.filter(e => !e.fields.includes('name')));
+                            }}
+                            secure={false}
+                            style={{ width: 310, height: 40 }}
+                            onDone={onDone}
+                        />
+                    </div>
+                    <div className='pt-6'>
+                        <TextInput
+                            value={email}
+                            error={error.filter(e => e.fields.includes('email')).length > 0}
+                            placeholder={'email'}
+                            setValue={v => {
+                                setEmail(v);
+                                setError(p => p.filter(e => !e.fields.includes('email')));
+                            }}
+                            secure={false}
+                            style={{ width: 310, height: 40 }}
+                            onDone={onDone}
+                        />
+                    </div>
+                    <div className='pt-6'>
+                        <TextInput
+                            value={password0}
+                            error={error.filter(e => e.fields.includes('password0')).length > 0}
+                            placeholder={'password (6+ characters)'}
+                            setValue={v => {
+                                setPassword0(v);
+                                setError(p => p.filter(e => !e.fields.includes('password0')));
+                            }}
+                            secure={true}
+                            style={{ width: 310, height: 40 }}
+                            onDone={onDone}
+                        />
+                    </div>
+                    <div className='pt-6'>
+                        <TextInput
+                            value={password1}
+                            error={error.filter(e => e.fields.includes('password1')).length > 0}
+                            placeholder={'confirm password'}
+                            setValue={v => {
+                                setPassword1(v);
+                                setError(p => p.filter(e => !e.fields.includes('password1')))
+                            }}
+                            secure={true}
+                            style={{ width: 310, height: 40 }}
+                            onDone={onDone}
+                        />
+                    </div>
+                    <div className='flex-1' />
                     {error.length > 0 && (
-                        <div className='absolute flex flex-col justify-center' style={{ top: 403, height: 40 }}>
-                            <div className='text-red-200'>
+                        <div className='flex flex-col justify-center' style={{ height: 40 }}>
+                            <div className='text-red'>
                                 {error.length > 1 ? 'multiple errors' : error[0].message}
                             </div>
                         </div>
                     )}
                     <button
-                        className='absolute button-primary rounded-lg flex flex-col items-center justify-center text-white font-semibold cursor-pointer outline-none border-none'
-                        style={{ width: 310, height: 40, top: 456 }}
+                        className='button-primary rounded-lg flex flex-col items-center justify-center text-white font-semibold cursor-pointer outline-none border-none'
+                        style={{ width: 310, height: 40 }}
                         onClick={onDone}
                     >sign up</button>
-                    <Link
-                        to='/log-in'
-                        className='absolute w-full h-full button-secondary rounded-lg flex flex-col items-center justify-center text-black font-semibold cursor-pointer outline-none border-none'
-                        style={{ width: 310, height: 40, top: 522 }}
-                    >log in</Link>
+                    <div className='pt-6'>
+                        <Link
+                            to='/log-in'
+                            className='w-full h-full button-secondary rounded-lg flex flex-col items-center justify-center text-black font-semibold cursor-pointer outline-none border-none'
+                            style={{ width: 310, height: 40 }}
+                        >log into an existing account</Link>
+                    </div>
+                    <div style={{ width: 310 }} className="flex flex-row justify-center" >
+                        <Link
+                            to='/forgot-password'
+                            className='p-6 font-semibold cursor-pointer outline-none border-none text-blue'
+                        >forgot password?</Link>
+                    </div>
                 </div>
             </div>
         </div>

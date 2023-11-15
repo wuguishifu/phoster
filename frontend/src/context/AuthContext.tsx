@@ -1,4 +1,4 @@
-import { User, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { GoogleAuthProvider, User, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../firebase-config";
 
@@ -9,6 +9,8 @@ interface a {
     login: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
+    user_id: string | undefined;
+    signInWithGoogle: () => Promise<void>;
 }
 
 const AuthContext = createContext({} as a);
@@ -47,13 +49,20 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
         await sendPasswordResetEmail(auth, email);
     }
 
+    async function signInWithGoogle() {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+    }
+
     const value = {
         hasCheckedAuth,
         currentUser,
         signup,
         login,
         logout,
-        resetPassword
+        resetPassword,
+        user_id: currentUser?.uid,
+        signInWithGoogle,
     };
 
     return (
