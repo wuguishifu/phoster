@@ -5,12 +5,12 @@ import { auth } from "../firebase-config";
 interface a {
     hasCheckedAuth: boolean;
     currentUser: null | User;
-    signup: (email: string, password: string, name: string) => Promise<void>;
-    login: (email: string, password: string) => Promise<void>;
+    signUpWithEmail: (email: string, password: string, name: string) => Promise<void>;
+    signInWithEmail: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
     user_id: string | undefined;
-    signInWithGoogle: () => Promise<void>;
+    signInWithGoogle: () => Promise<boolean>;
 }
 
 const AuthContext = createContext({} as a);
@@ -32,12 +32,12 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
         return unsubscribe;
     }, []);
 
-    async function signup(email: string, password: string, name: string) {
+    async function signUpWithEmail(email: string, password: string, name: string) {
         await createUserWithEmailAndPassword(auth, email, password);
         if (currentUser) await updateProfile(currentUser, { displayName: name });
     }
 
-    async function login(email: string, password: string) {
+    async function signInWithEmail(email: string, password: string) {
         await signInWithEmailAndPassword(auth, email, password);
     }
 
@@ -49,16 +49,17 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
         await sendPasswordResetEmail(auth, email);
     }
 
-    async function signInWithGoogle() {
+    async function signInWithGoogle(): Promise<boolean> {
         const provider = new GoogleAuthProvider();
         const result = await signInWithPopup(auth, provider);
+        return !!result.user?.uid;
     }
 
     const value = {
         hasCheckedAuth,
         currentUser,
-        signup,
-        login,
+        signUpWithEmail,
+        signInWithEmail,
         logout,
         resetPassword,
         user_id: currentUser?.uid,
