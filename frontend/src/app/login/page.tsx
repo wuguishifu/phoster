@@ -84,7 +84,7 @@ export default function Login() {
                                     </div>
                                     <FormControl>
                                         <div className='relative'>
-                                            <Input placeholder='●●●●●●●●' {...field} type={passwordVisible ? 'text' : 'password'} autoComplete='on' className='pr-10' />
+                                            <Input placeholder={passwordVisible ? 'password' : '●●●●●●●●'} {...field} type={passwordVisible ? 'text' : 'password'} autoComplete='on' className='pr-10' />
                                             <div className='absolute inset-y-0 right-0 px-3 flex items-center text-muted-foreground cursor-pointer'>
                                                 {passwordVisible ?
                                                     <i className='ri-eye-off-line' onClick={togglePasswordVisibility} /> :
