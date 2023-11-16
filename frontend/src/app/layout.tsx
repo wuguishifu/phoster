@@ -4,6 +4,7 @@ import '@/styles/globals.css';
 
 import { cn } from '@/lib/utils';
 import { Providers } from './providers';
+import WithNavbar from './with-navbar';
 
 const nunito = Nunito({
     subsets: ['latin'],
@@ -20,9 +21,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en">
             <body className={cn('h-screen bg-background antialiased', nunito.className)}>
                 <Providers>
-                    {children}
+                    <WithNavbar>
+                        {children}
+                    </WithNavbar>
                 </Providers>
             </body>
         </html>
     );
+
 };
