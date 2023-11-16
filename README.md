@@ -33,7 +33,7 @@ In the frontend, I will display albums you can see in a grid. Upon clicking on a
 
 I also will include upload and download options for each album.
 
-The frontend will be built in React and Tailwind CSS using the Vite tooling.
+The frontend will be built in ~~React~~ Next.js and Tailwind CSS ~~using the Vite tooling~~ with shadcn/ui as the main component template library.
 
 ## Project
 
