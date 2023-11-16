@@ -14,7 +14,7 @@ export default function Navbar({ className }: { className?: string }) {
     const router = useRouter();
 
     return (
-        <div className={cn(className, "w-full flex flex-row items-center gap-8 px-4 py-3")}>
+        <div className={cn(className, "w-full flex flex-row items-center gap-8 py-3")}>
             <Link href="/" className='text-4xl font-bold text-primary hover:text-primary/90'>Phoster</Link>
             <div className="flex-1" />
             {currentUser ? (
