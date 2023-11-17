@@ -2,7 +2,7 @@ import { GoogleAuthProvider, User, createUserWithEmailAndPassword, sendPasswordR
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../firebase-config";
 
-interface a {
+type AuthContext = {
     hasCheckedAuth: boolean;
     currentUser: null | User;
     signUpWithEmail: (email: string, password: string, name: string) => Promise<void>;
@@ -13,7 +13,7 @@ interface a {
     signInWithGoogle: () => Promise<boolean>;
 }
 
-const AuthContext = createContext({} as a);
+const AuthContext = createContext({} as AuthContext);
 
 export function useAuth() {
     return useContext(AuthContext);
