@@ -66,7 +66,7 @@ export default function Login() {
     return (
         <Centered>
             <main className='w-full h-full flex items-center justify-center'>
-                <div className='flex flex-col items-center justify-center rounded-xl overflow-hidden w-modal h-modal' style={{ boxShadow: '0 0 53px 4px rgba(0, 0, 0, 0.07)' }}>
+                <div className='modal'>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className='w-[310px] flex flex-col gap-4'>
                             <h1 className='font-bold text-3xl leading-10 text-center'>{params.get('next') === 'delete' ? 'sign in' : 'welcome back!'}</h1>
@@ -109,7 +109,7 @@ export default function Login() {
                             />
                             <div className='h-8' />
                             <Button type='submit'>Sign In</Button>
-                            <FormSeparator label="don't have an account?" />
+                            <FormSeparator label="need an account?" />
                             <Link className={buttonVariants({ variant: 'secondary' })} href={'/signup'}>Sign Up</Link>
                             <Button variant='secondary' type='button' onClick={onGoogle}>Sign In with Google</Button>
                             <div className='h-8' />

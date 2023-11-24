@@ -57,7 +57,7 @@ export default function Signup() {
     return (
         <Centered>
             <main className='w-full h-full flex items-center justify-center'>
-                <div className='flex flex-col items-center justify-center rounded-xl overflow-hidden w-modal h-modal' style={{ boxShadow: '0 0 53px 4px rgba(0, 0, 0, 0.07)' }}>
+                <div className='modal'>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className='w-[310px] flex flex-col gap-4'>
                             <h1 className='font-bold text-3xl leading-10 text-center'>welcome!</h1>
