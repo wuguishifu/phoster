@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import 'remixicon/fonts/remixicon.css';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./dropdown-menu";
 import { cn } from "@/lib/utils";
-import { LogOut, LogIn, ClipboardSignature, Settings } from 'lucide-react';
+import { LogOut, LogIn, ClipboardSignature, Settings, HardDrive } from 'lucide-react';
 
 export default function Navbar({ className }: { className?: string }) {
     const { currentUser, logout } = useAuth();
@@ -41,6 +41,10 @@ export default function Navbar({ className }: { className?: string }) {
                     <DropdownMenuContent>
                         <DropdownMenuLabel>Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => router.push('/my-servers')}>
+                            <HardDrive className="mr-2 h-4 w-4 text-popover-foreground" />
+                            <span>My Servers</span>
+                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => router.push('/settings')}>
                             <Settings className="mr-2 h-4 w-4 text-popover-foreground" />
                             <span>Settings</span>
