@@ -13,6 +13,12 @@ module.exports = {
             },
         },
         extend: {
+            width: {
+                modal: '532px'
+            },
+            height: {
+                modal: '648px'
+            },
             colors: {
                 empty: "#E4E6E7",
                 border: "hsl(var(--border))",

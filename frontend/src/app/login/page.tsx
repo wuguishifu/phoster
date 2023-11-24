@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { useAuth } from '@/context/AuthContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import 'remixicon/fonts/remixicon.css';
@@ -21,6 +21,7 @@ const formSchema = z.object({
 
 export default function Login() {
     const router = useRouter();
+    const params = useSearchParams();
     const { signInWithGoogle, signInWithEmail } = useAuth();
 
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -36,7 +37,7 @@ export default function Login() {
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         signInWithEmail(values.email, values.password)
-            .then(() => router.push('/'))
+            .then(goToNext)
             .catch(e => {
                 console.log(e);
                 switch (e.code) {
@@ -50,17 +51,25 @@ export default function Login() {
 
     function onGoogle() {
         signInWithGoogle().then(success => {
-            if (success) router.push('/');
+            if (success) goToNext();
         });
+    }
+
+    function goToNext() {
+        if (params.get('next') === 'delete') {
+            router.push('/delete-account');
+        } else {
+            router.push('/');
+        }
     }
 
     return (
         <Centered>
             <main className='w-full h-full flex items-center justify-center'>
-                <div className='flex flex-col items-center justify-center rounded-xl overflow-hidden w-[532px] h-[648px]' style={{ boxShadow: '0 0 53px 4px rgba(0, 0, 0, 0.07)' }}>
+                <div className='flex flex-col items-center justify-center rounded-xl overflow-hidden w-modal h-modal' style={{ boxShadow: '0 0 53px 4px rgba(0, 0, 0, 0.07)' }}>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className='w-[310px] flex flex-col gap-4'>
-                            <h1 className='font-bold text-3xl leading-10 text-center'>welcome back!</h1>
+                            <h1 className='font-bold text-3xl leading-10 text-center'>{params.get('next') === 'delete' ? 'sign in' : 'welcome back!'}</h1>
                             <div className='h-8' />
                             <FormField
                                 control={form.control}
@@ -100,7 +109,7 @@ export default function Login() {
                             />
                             <div className='h-8' />
                             <Button type='submit'>Sign In</Button>
-                            <FormSeparator label='or' />
+                            <FormSeparator label="don't have an account?" />
                             <Link className={buttonVariants({ variant: 'secondary' })} href={'/signup'}>Sign Up</Link>
                             <Button variant='secondary' type='button' onClick={onGoogle}>Sign In with Google</Button>
                             <div className='h-8' />

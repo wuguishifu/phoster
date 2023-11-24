@@ -41,7 +41,7 @@ export default function Navbar({ className }: { className?: string }) {
                     <DropdownMenuContent>
                         <DropdownMenuLabel>Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem disabled>
+                        <DropdownMenuItem onClick={() => router.push('/settings')}>
                             <Settings className="mr-2 h-4 w-4 text-popover-foreground" />
                             <span>Settings</span>
                         </DropdownMenuItem>

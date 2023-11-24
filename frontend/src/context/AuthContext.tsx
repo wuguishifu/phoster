@@ -1,8 +1,9 @@
-import { GoogleAuthProvider, User, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
+import { GoogleAuthProvider, User, createUserWithEmailAndPassword, deleteUser, getAdditionalUserInfo, reauthenticateWithCredential, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../firebase-config";
+import { useApi } from "./ApiContext";
 
-type AuthContext = {
+type AuthContextType = {
     hasCheckedAuth: boolean;
     currentUser: null | User;
     signUpWithEmail: (email: string, password: string, name: string) => Promise<void>;
@@ -11,9 +12,10 @@ type AuthContext = {
     resetPassword: (email: string) => Promise<void>;
     user_id: string | undefined;
     signInWithGoogle: () => Promise<boolean>;
-}
+    deleteAccount: () => Promise<boolean>;
+};
 
-const AuthContext = createContext({} as AuthContext);
+const AuthContext = createContext({} as AuthContextType);
 
 export function useAuth() {
     return useContext(AuthContext);
@@ -22,6 +24,8 @@ export function useAuth() {
 export function AuthProvider({ children }: { children: ReactNode }): JSX.Element {
     const [currentUser, setCurrentUser] = useState<null | User>(null);
     const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
+
+    const { users } = useApi();
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -33,8 +37,11 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
     }, []);
 
     async function signUpWithEmail(email: string, password: string, name: string) {
-        await createUserWithEmailAndPassword(auth, email, password);
-        if (currentUser) await updateProfile(currentUser, { displayName: name });
+        const result = await createUserWithEmailAndPassword(auth, email, password);
+        await Promise.allSettled([
+            updateProfile(result.user, { displayName: name }),
+            users.generateNewUser(result.user.uid, email)
+        ]);
     }
 
     async function signInWithEmail(email: string, password: string) {
@@ -52,7 +59,19 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
     async function signInWithGoogle(): Promise<boolean> {
         const provider = new GoogleAuthProvider();
         const result = await signInWithPopup(auth, provider);
+        const additionalInfo = getAdditionalUserInfo(result);
+        console.log(result.user.email);
+        if (additionalInfo?.isNewUser) await users.generateNewUser(result.user.uid, result.user.email);
         return !!result.user?.uid;
+    }
+
+    // must be authenticated, send to login page first
+    async function deleteAccount(): Promise<boolean> {
+        const user = auth.currentUser;
+        if (!user) return false;
+        await deleteUser(user);
+        users.deleteUser(user.uid);
+        return true;
     }
 
     const value = {
@@ -64,6 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
         resetPassword,
         user_id: currentUser?.uid,
         signInWithGoogle,
+        deleteAccount
     };
 
     return (

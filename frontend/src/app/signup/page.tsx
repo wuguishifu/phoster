@@ -17,15 +17,11 @@ import { Centered } from '../with-navbar';
 const formSchema = z.object({
     email: z.string().email({ message: '- invalid email address' }),
     name: z.string().min(1, { message: '- name is required' }),
-    password0: z.string().min(6, { message: '- password must be at least 6 characters long' }),
-    password1: z.string()
-}).refine((data) =>
-    data.password0 === data.password1, { message: '- passwords do not match', path: ['password1'] }
-);
-
+    password: z.string().min(6, { message: '- password must be at least 6 characters long' }),
+});
 export default function Signup() {
     const router = useRouter();
-    const { signUpWithEmail } = useAuth();
+    const { signUpWithEmail, signInWithGoogle } = useAuth();
 
     const [passwordVisible, setPasswordVisible] = useState(false);
     const togglePasswordVisibility = () => setPasswordVisible(p => !p);
@@ -35,13 +31,12 @@ export default function Signup() {
         defaultValues: {
             email: '',
             name: '',
-            password0: '',
-            password1: ''
+            password: '',
         }
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        signUpWithEmail(values.email, values.password0, values.name)
+        signUpWithEmail(values.email, values.password, values.name)
             .then(() => router.push('/'))
             .catch(e => {
                 console.log(e);
@@ -53,10 +48,16 @@ export default function Signup() {
             });
     }
 
+    function onGoogle() {
+        signInWithGoogle().then(success => {
+            if (success) router.push('/');
+        });
+    }
+
     return (
         <Centered>
             <main className='w-full h-full flex items-center justify-center'>
-                <div className='flex flex-col items-center justify-center rounded-xl overflow-hidden w-[532px] h-[648px]' style={{ boxShadow: '0 0 53px 4px rgba(0, 0, 0, 0.07)' }}>
+                <div className='flex flex-col items-center justify-center rounded-xl overflow-hidden w-modal h-modal' style={{ boxShadow: '0 0 53px 4px rgba(0, 0, 0, 0.07)' }}>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className='w-[310px] flex flex-col gap-4'>
                             <h1 className='font-bold text-3xl leading-10 text-center'>welcome!</h1>
@@ -91,33 +92,11 @@ export default function Signup() {
                             />
                             <FormField
                                 control={form.control}
-                                name='password0'
+                                name='password'
                                 render={({ field }) => (
                                     <FormItem>
                                         <div className='flex flex-row items-center'>
-                                            <FormLabel className='leading-1'>Password {form.formState.errors.password0 && <>{form.formState.errors.password0.message}</>}</FormLabel>
-                                        </div>
-                                        <FormControl>
-                                            <div className='relative'>
-                                                <Input placeholder={passwordVisible ? 'password' : '●●●●●●●●'} {...field} type={passwordVisible ? 'text' : 'password'} autoComplete='on' className='pr-10' />
-                                                <div className='absolute inset-y-0 right-0 px-3 flex items-center text-muted-foreground cursor-pointer'>
-                                                    {passwordVisible ?
-                                                        <i className='ri-eye-off-line' onClick={togglePasswordVisibility} /> :
-                                                        <i className='ri-eye-line' onClick={togglePasswordVisibility} />
-                                                    }
-                                                </div>
-                                            </div>
-                                        </FormControl>
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name='password1'
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <div className='flex flex-row items-center'>
-                                            <FormLabel className='leading-1'>Confirm Password {form.formState.errors.password1 && <>{form.formState.errors.password1.message}</>}</FormLabel>
+                                            <FormLabel className='leading-1'>Password {form.formState.errors.password && <>{form.formState.errors.password.message}</>}</FormLabel>
                                         </div>
                                         <FormControl>
                                             <div className='relative'>
@@ -135,7 +114,8 @@ export default function Signup() {
                             />
                             <div className='h-4' />
                             <Button type='submit'>Sign Up</Button>
-                            <FormSeparator label='or' />
+                            <Button variant='secondary' type='button' onClick={onGoogle}>Sign Up with Google</Button>
+                            <FormSeparator label='already have an account?' />
                             <Link className={buttonVariants({ variant: 'secondary' })} href={'/login'}>Sign In</Link>
                         </form>
                     </Form>
