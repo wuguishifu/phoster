@@ -1,0 +1,18 @@
+{
+    "development": {
+        "db": "phoster",
+        "ip": "mongodb://127.0.0.1:27017",
+        "options": {
+            "retryWrites": true,
+            "w": "majority"
+        }
+    },
+    "production": {
+        "db": "phoster",
+        "ip": "mongodb://127.0.0.1:27017",
+        "options": {
+            "retryWrites": true,
+            "w": "majority"
+        }
+    }
+}
