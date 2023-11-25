@@ -1,0 +1,9 @@
+collections:
+  users: # should be able to query by user_id
+    user_id: string # unique, handled by firebase and does not change
+    invitations: [string]
+    joined: [string]
+  servers: # should be able to query by server_id, owner, and members
+    server_id: string # this is going to be in the form [owner_id][server_name]
+    owner: string
+    members: [string]
