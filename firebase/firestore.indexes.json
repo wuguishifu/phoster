@@ -1,4 +1,15 @@
 {
   "indexes": [],
-  "fieldOverrides": []
+  "fieldOverrides": [
+    {
+      "collectionGroup": "users",
+      "fieldPath": "invitations",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "users",
+      "fieldPath": "joined",
+      "indexes": []
+    }
+  ]
 }
