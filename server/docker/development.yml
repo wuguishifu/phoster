@@ -1,0 +1,26 @@
+version: "3.9"
+name: "phoster-backend"
+networks:
+  api-network:
+    name: "phoster-api-network"
+    driver: bridge
+services:
+  mongodb:
+    container_name: mongodb
+    image: mongodb/mongodb-community-server:latest
+    restart: on-failure
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: local
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - 27017:27017
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 2s
+      timeout: 2s
+      retries: 10
+    volumes:
+      - mongodb:/data/db
+volumes:
+  mongodb:
+    name: phoster-mongodb

@@ -1,23 +1,34 @@
 {
     "collections": {
+        "users": {
+            "indexes": [
+                {
+                    "field": "username",
+                    "type": "unique",
+                    "indexSpec": {
+                        "pattern": 1
+                    }
+                }
+            ]
+        },
         "albums": {
             "indexes": [
                 {
-                    "field": "album_id",
+                    "field": "album_name",
                     "type": "default",
                     "indexSpec": {
                         "pattern": 1
                     }
                 },
                 {
-                    "field": "title",
+                    "field": "author",
                     "type": "default",
                     "indexSpec": {
                         "pattern": 1
                     }
                 },
                 {
-                    "field": "creator",
+                    "field": "created_at",
                     "type": "default",
                     "indexSpec": {
                         "pattern": 1

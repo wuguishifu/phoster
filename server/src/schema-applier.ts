@@ -3,34 +3,40 @@ import { IndexSpecification, MongoClient } from 'mongodb';
 type Config = {
     ip: string;
     db: string;
-    options: {
-        [key: string]: string | boolean;
-    }
-}
+    options: Record<string, string | boolean>;
+};
+
+type Unique = {
+    type: 'unique';
+    field: string;
+    indexSpec: {
+        pattern: 1 | -1;
+    };
+};
 
 type Default = {
     type: 'default';
     field: string;
     indexSpec: {
         pattern: 1 | -1;
-    }
-}
+    };
+};
 
 type Compound = {
     type: 'compound';
     field: string;
     indexSpec: {
         [key: string]: 1 | -1;
-    }
-}
+    };
+};
 
 type Sparse = {
     type: 'sparse';
     field: string;
     indexSpec: {
         pattern: 1 | -1;
-    }
-}
+    };
+};
 
 type TTLIndex = {
     type: 'ttl';
@@ -38,16 +44,12 @@ type TTLIndex = {
     indexSpec: {
         pattern: 1 | -1;
         expiresAfterSeconds: number;
-    }
-}
+    };
+};
 
 type Schema = {
-    collections: {
-        [key: string]: {
-            indexes: (Default | Compound | Sparse | TTLIndex)[];
-        }
-    }
-}
+    collections: Record<string, { indexes: (Default | Compound | Sparse | TTLIndex | Unique)[] }>;
+};
 
 export { Schema };
 
@@ -72,6 +74,7 @@ export default class Applier {
                     case 'compound': return db.collection(collection).createIndex(indexSpec as IndexSpecification);
                     case 'sparse': return db.collection(collection).createIndex({ [field]: indexSpec.pattern }, { sparse: true });
                     case 'ttl': return db.collection(collection).createIndex({ [field]: indexSpec.pattern }, { expireAfterSeconds: indexSpec.expiresAfterSeconds });
+                    case 'unique': return db.collection(collection).createIndex({ [field]: indexSpec.pattern }, { unique: true })
                 }
             });
         }));
